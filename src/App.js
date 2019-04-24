@@ -1,8 +1,15 @@
 import React, { Component } from 'react';
 import LocalizedStrings from 'react-localization';
 import './App.css';
-import StartScreen from './StartScreen.js';
+import AboutScreen from './AboutScreen.js';
+import ContactScreen from './ContactScreen.js';
+import CategoryItemScreen from './CategoryItemScreen.js';
+import CategoryFirstScreen from './CategoryFirstScreen.js';
+import HomeScreen from './HomeScreen.js';
 import DataSheet_localizationSheet from './DataSheet_localizationSheet.js';
+import DataSheet_kimono from './DataSheet_kimono.js';
+import firebase from 'firebase';
+import firestore from 'firebase/firestore';
 
 
 export default class App extends Component {
@@ -11,16 +18,41 @@ export default class App extends Component {
 
     this.dataSheets = {};
     this.dataSheets['localizationSheet'] = new DataSheet_localizationSheet('localizationSheet', this.dataSheetDidUpdate);
+    this.dataSheets['kimono'] = new DataSheet_kimono('kimono', this.dataSheetDidUpdate);
 
     this.dataSlots = {};
     this.dataSlots['ds_activeLang'] = "en";
+    this.dataSlots['ds_kirumonoCategory'] = "";
+    this.dataSlots['ds_kimonoDescription'] = "";
+    this.dataSlots['ds_kimonoImage'] = "";
+    this.dataSlots['ds_kimonoName'] = "";
+    this.dataSlots['ds_kimonoPrice'] = "";
+    this.dataSlots['ds_kimonoType'] = "";
+    this.dataSlots['ds_kimonoID'] = "";
 
     this.updateLocalizationFromDataSheet(this.dataSheets['localizationSheet']);
 
+
+    // Initialize web service plugin 'firebase-kirumono-app'
+    firebase.initializeApp({apiKey: "AIzaSyC-hXjVRgtS0XV6k0spIyUujGDfpX_L3rY",
+        authDomain: "kirumono-app-1555251317938.firebaseapp.com",
+        databaseURL: "https://kirumono-app-1555251317938.firebaseio.com",
+        projectId: "kirumono-app-1555251317938",
+        storageBucket: "kirumono-app-1555251317938.appspot.com",
+        messagingSenderId: "926713792572"});
+    firebase.firestore().settings({});
+    
+    this.serviceOptions_kimono = {
+      dataSlots: this.dataSlots,
+      servicePath: "kimono",
+      query: "",
+    };
+    this.dataSheets['kimono'].firebase = firebase;
+    
+
     this.state = {
-      currentScreen: 'start',
+      currentScreen: 'home',
       currentScreenProps: {},
-      screenFormatId: '',
       screenTransitionForward: true,
     }
     this.screenHistory = [ {...this.state} ];
@@ -42,6 +74,10 @@ export default class App extends Component {
   componentDidMount() {
     this.windowDidResize();
     window.addEventListener('resize', this.windowDidResize);
+
+    this.serviceOptions_kimono.servicePath = this.dataSheets['kimono'].expandSlotTemplateString("kimono", this.dataSlots);
+    this.loadData_firebasekirumonoapp(this.dataSheets['kimono'], this.serviceOptions_kimono, true);
+    
   }
 
   componentWillUnmount() {
@@ -138,6 +174,16 @@ export default class App extends Component {
     if (slotId === 'ds_activeLang') {
       this.locStrings.setLanguage(value);
     }
+
+    {
+      let usedSlots = [];
+      let servicePath = this.dataSheets['kimono'].expandSlotTemplateString("kimono", this.dataSlots, usedSlots);
+      if (usedSlots.includes(slotId)) {
+        // if data sheet's content depends on this slot, reload it now
+        this.serviceOptions_kimono.servicePath = servicePath;
+        this.loadData_firebasekirumonoapp(this.dataSheets['kimono'], this.serviceOptions_kimono, true);
+      }
+    }
     this.setState({});
   }
 
@@ -156,6 +202,84 @@ export default class App extends Component {
     this.locStrings.setLanguage(this.dataSlots['ds_activeLang']);
   }
 
+  loadData_firebasekirumonoapp = (dataSheet, options, firstLoad) => {
+    // This method was written by data plugin 'Firebase (Cloud Firestore)'.
+   this.setState({loading: true});
+    
+    // clear any placeholder data before load
+    if (firstLoad) {
+      dataSheet.items = [];
+    }
+    
+    const fetchComplete = (err) => {
+      if (err) {
+        // This error handling comes from React Studio
+        // and currently doesn't do anything useful.
+        console.error('** Web service load failed: ', err);
+      } else {
+      }
+      this.setState({loading: false});
+    }
+    
+    const db = firebase.firestore();
+    const collection = db.collection(options.servicePath);
+    const query = dataSheet.expandSlotTemplateString(options.query, this.dataSlots);
+    let queryObj;
+    
+    if (query.length < 1) {
+      queryObj = collection;
+    } else {
+      console.log("loading firebase data for '%s' with query: %s", options.servicePath, query);
+      try {
+        queryObj = eval(`(function(c){ return c.${query}; })(collection)`);
+      } catch (e) {
+        console.log("** error creating firebase query object from '%s': ", query, e)
+        return;
+      }
+    }
+    
+    queryObj.onSnapshot(
+      (querySnapshot) => {
+        let jsonArr = [];
+        
+        if (querySnapshot.docs) {
+          querySnapshot.forEach((doc) => {
+            const data = { ...doc.data(), document_key: doc.id };
+            jsonArr.push(data);
+          });
+        } else if (querySnapshot.data) {
+          const doc = querySnapshot;
+          const data = { ...doc.data(), document_key: doc.id };
+          jsonArr.push(data);
+        }    
+            
+        dataSheet.loadFromJson(jsonArr);
+        fetchComplete(null, options);  
+      },
+      (err) => {
+        fetchComplete(err, options);
+      });  
+    
+    
+     /*
+    dbLoadingPromise.get().then((querySnapshot) => {
+        let jsonArr = [];
+    
+        querySnapshot.forEach((doc) => {
+          const data = { ...doc.data(), key: doc.id };
+          jsonArr.push(data);
+        });
+            
+        dataSheet.loadFromJson(jsonArr);
+        fetchComplete(null, options);
+      },
+      (err) => {
+        fetchComplete(err, options);
+      });  
+      */
+    
+  }
+
   render() {
     let makeElementForScreen = (screenId, baseProps, atTop, forward) => {
       let screenProps = {
@@ -168,13 +292,28 @@ export default class App extends Component {
         deviceInfo: {
           screenFormatId: this.state.screenFormatId
         },
-        ds_activeLang: this.dataSlots['ds_activeLang'],
+        'ds_activeLang': this.dataSlots['ds_activeLang'],
+        'ds_kirumonoCategory': this.dataSlots['ds_kirumonoCategory'],
+        'ds_kimonoDescription': this.dataSlots['ds_kimonoDescription'],
+        'ds_kimonoImage': this.dataSlots['ds_kimonoImage'],
+        'ds_kimonoName': this.dataSlots['ds_kimonoName'],
+        'ds_kimonoPrice': this.dataSlots['ds_kimonoPrice'],
+        'ds_kimonoType': this.dataSlots['ds_kimonoType'],
+        'ds_kimonoID': this.dataSlots['ds_kimonoID'],
       };
       switch (screenId) {
         default:
           return null;
-        case 'start':
-          return (<StartScreen {...screenProps} />)
+        case 'about':
+          return (<AboutScreen {...screenProps} />)
+        case 'contact':
+          return (<ContactScreen {...screenProps} />)
+        case 'categoryitem':
+          return (<CategoryItemScreen {...screenProps} />)
+        case 'categoryfirst':
+          return (<CategoryFirstScreen {...screenProps} />)
+        case 'home':
+          return (<HomeScreen {...screenProps} />)
       }
     }
 
