@@ -3,10 +3,11 @@ import './App.css';
 import btn_icon_957931 from './images/btn_icon_957931.png';
 import Footer from './Footer';
 import Header from './Header';
+import UTILITIES_ARRAY from './utilities';
+import firebase from '../node_modules/firebase';
 
 // UI framework component imports
 import Button from 'muicss/lib/react/button';
-
 
 export default class ContactScreen extends Component {
 
@@ -46,20 +47,39 @@ export default class ContactScreen extends Component {
   }
   
   onClick_elSubmit = (ev) => {
-    let address = "konagasawaapp@gmail.com";
+    let address = "your-email-address";
     let subject = "Inquiry: ";
     let lastName = this.state.last_name;
     let firstName = this.state.first_name;
     let userAddress = this.state.email_address;
     let userPhone = this.state.phone_number;
     let comment = this.state.comment;
-    console.log(comment);
     let body = comment;
-    body = body + "Your name: " + firstName + " " + lastName;
-    body = body + "Your address: " + userAddress;
-    body = body + "Your phone: " + userPhone;
-    window.location = "mailto:" + address + "?subject=" + subject + "&body=" + body;
-  
+    body = body + "<br />" + "Your name: " + firstName + " " + lastName;
+    body = body + "<br />" + "Your address: " + userAddress;
+    body = body + "<br />" + "Your phone: " + userPhone;
+    //window.location = "mailto:" + address + "?subject=" + subject + "&body=" + body;
+    //window.open("https://us-central1-kirumono-app-1555251317938.cloudfunctions.net/sendMail?dest=konagasawaapp@gmail.com");
+
+    var send = firebase.functions().httpsCallable('sendMail');
+    send({dest: userAddress, text: body}).then(function(result){
+      var sanitizedMessage = result.data.text;}).catch(function (error){
+        var code = error.code;
+        var message = error.message;
+        var details = error.details;
+        console.log(`ERROR LOG: ${code}::: ${message}::: ${details}`)
+      });
+
+
+    //THIS IS HTTPSCALLABLE VERSION, BUT PASSING QUERYSTRING 'dest' IS NOT WORKING, NEED TO FIX
+    // var send = firebase.functions().httpsCallable('sendMail');
+    // send({dest: "konagasawaapp@gmail.com"}).then(function(result){
+    //   var sanitizedMessage = result.data.text;}).catch(function (error){
+    //     var code = error.code;
+    //     var message = error.message;
+    //     var details = error.details;
+    //     console.log(`THIS IS: ${code}::: ${message}::: ${details}`)
+    //   });
   }
   
   
