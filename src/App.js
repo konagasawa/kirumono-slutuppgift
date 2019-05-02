@@ -34,12 +34,12 @@ export default class App extends Component {
 
 
     // Initialize web service plugin 'firebase-kirumono-app'
-    firebase.initializeApp({apiKey: "AIzaSyC-hXjVRgtS0XV6k0spIyUujGDfpX_L3rY",
-        authDomain: "kirumono-app-1555251317938.firebaseapp.com",
-        databaseURL: "https://kirumono-app-1555251317938.firebaseio.com",
-        projectId: "kirumono-app-1555251317938",
-        storageBucket: "kirumono-app-1555251317938.appspot.com",
-        messagingSenderId: "926713792572"});
+    firebase.initializeApp({apiKey: UTILITIES_FIREBASE_ARRAY[0],
+        authDomain: UTILITIES_FIREBASE_ARRAY[1],
+        databaseURL: UTILITIES_FIREBASE_ARRAY[2],
+        projectId: UTILITIES_FIREBASE_ARRAY[3],
+        storageBucket: UTILITIES_FIREBASE_ARRAY[4],
+        messagingSenderId: UTILITIES_FIREBASE_ARRAY[5]});
     firebase.firestore().settings({});
     
     this.serviceOptions_kimono = {
