@@ -47,7 +47,8 @@ export default class ContactScreen extends Component {
   }
   
   onClick_elSubmit = (ev) => {
-    let address = "your-email-address";
+
+   let address = "your-email-address";
     let subject = "Inquiry: ";
     let lastName = this.state.last_name;
     let firstName = this.state.first_name;
@@ -70,16 +71,6 @@ export default class ContactScreen extends Component {
         console.log(`ERROR LOG: ${code}::: ${message}::: ${details}`)
       });
 
-
-    //THIS IS HTTPSCALLABLE VERSION, BUT PASSING QUERYSTRING 'dest' IS NOT WORKING, NEED TO FIX
-    // var send = firebase.functions().httpsCallable('sendMail');
-    // send({dest: "konagasawaapp@gmail.com"}).then(function(result){
-    //   var sanitizedMessage = result.data.text;}).catch(function (error){
-    //     var code = error.code;
-    //     var message = error.message;
-    //     var details = error.details;
-    //     console.log(`THIS IS: ${code}::: ${message}::: ${details}`)
-    //   });
   }
   
   
