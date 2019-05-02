@@ -18,6 +18,7 @@ export default class Header extends Component {
       elButton_close_menu_list_visible: false,
       elContactUs_visible: false,
       elKimono_visible: false,
+      elAboutUs_visible: false,
     };
   }
 
@@ -33,6 +34,8 @@ export default class Header extends Component {
     this.setState({elKimono_visible: true});
   
     this.setState({elContactUs_visible: true});
+
+    this.setState({elAboutUs_visible: true});
   
   }
   
@@ -49,6 +52,8 @@ export default class Header extends Component {
     this.setState({elKimono_visible: false});
   
     this.setState({elContactUs_visible: false});
+
+    this.setState({elAboutUs_visible: false});
   
   }
   
@@ -173,18 +178,28 @@ export default class Header extends Component {
         cursor: 'pointer',
         pointerEvents: 'auto',
      };
+
+
     const elContactUs = this.state.elContactUs_visible ? (
         <div className='baseFont elContactUs' style={style_elContactUs} onClick={this.onClick_elContactUs} >
           <div>{this.props.locStrings.header_text_1042336}</div>
         </div>
      ) : null;
+
     const style_elAboutUs = {
         color: '#d5d5d5',
         textAlign: 'center',
-        display: 'none',
         cursor: 'pointer',
         pointerEvents: 'auto',
      };
+     const elAboutUs = this.state.elAboutUs_visible ? (
+      <div className='baseFont elAboutUs' style={style_elAboutUs} onClick={this.onClick_elAboutUs} >
+      <div>{this.props.locStrings.header_text_784850}</div>
+    </div>
+     ): null;
+
+
+
     const style_elKimono = {
         color: '#d5d5d5',
         textAlign: 'center',
@@ -220,9 +235,7 @@ export default class Header extends Component {
             <div>{this.props.locStrings.comp1_title_text_129986}</div>
           </div>
           { elContactUs }
-          <div className='baseFont elAboutUs' style={style_elAboutUs} onClick={this.onClick_elAboutUs} >
-            <div>{this.props.locStrings.header_text_784850}</div>
-          </div>
+          {elAboutUs}
           { elKimono }
         </div>
       </div>

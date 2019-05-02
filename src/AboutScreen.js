@@ -11,11 +11,22 @@ import Button from 'muicss/lib/react/button';
 export default class AboutScreen extends Component {
 
   // Properties used by this component:
+  constructor(props){
+    super(props);
+    
+    this.state = {
+      about_text : "Kimono is a custom tailered traditional dress, and a entire process to make a full dress takes a tremendous time and procedure." 
+      + "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum",
+    }
+
+  }
+
+
   // appActions, deviceInfo
 
   onClick_elBack = (ev) => {
-    // Go to screen 'home'
-    this.props.appActions.goToScreen('home', { transitionId: 'fadeIn' });
+    // Go back in screen navigation history
+    this.props.appActions.goBack();
   
   }
   
@@ -57,6 +68,9 @@ export default class AboutScreen extends Component {
         color: 'rgba(0, 0, 0, 0.8500)',
         textAlign: 'left',
      };
+    const style_elBottom_scroll_outer = {
+        display: 'none',
+     };
     
     return (
       <div className="AppScreen AboutScreen" style={baseStyle}>
@@ -71,6 +85,7 @@ export default class AboutScreen extends Component {
           <div className='baseFont elAbout_us'>
             <div style={style_elAbout_us}>
               <div>{this.props.locStrings.about_text_521117}</div>
+              <div>{this.state.about_text}</div>
             </div>
           
           </div>
@@ -82,7 +97,7 @@ export default class AboutScreen extends Component {
           
           </div>
           
-          <div className='baseFont elBottom_scroll'>
+          <div className='baseFont elBottom_scroll' style={style_elBottom_scroll_outer}>
             <div style={style_elBottom_scroll}>
               <div>{this.props.locStrings.about_text_639193}</div>
             </div>
