@@ -60,7 +60,6 @@ export default class ContactScreen extends Component {
     body = body + "<br />" + "Your address: " + userAddress;
     body = body + "<br />" + "Your phone: " + userPhone;
     //window.location = "mailto:" + address + "?subject=" + subject + "&body=" + body;
-    //window.open("https://us-central1-kirumono-app-1555251317938.cloudfunctions.net/sendMail?dest=konagasawaapp@gmail.com");
 
     var send = firebase.functions().httpsCallable('sendMail');
     send({dest: userAddress, text: body}).then(function(result){
