@@ -19,8 +19,8 @@ export default class DataSheet_kimono extends DataSheetBase {
     this.items.push(item);
     item['kimonoPrice'] = "1500";
     item['kimonoDescription'] = "It is good to wear spring/summer season.";
-    item['document_key'] = "Irvx1XUwRsW1TI5JVfdJ";
-    item['kimonoImage'] = "https://firebasestorage.googleapis.com/v0/b/kirumono-app-1555251317938.appspot.com/o/kimono%2Fitem_1.JPG?alt=media&token=7545d4cd-d193-4f60-8215-58d41b75219c";
+    item['document_key'] = "";
+    item['kimonoImage'] = "https://firebasestorage.googleapis.com/v0/b/";
     item['kimonoName'] = "Inner top";
     item['kimonoCategory'] = "top_inner";
     item['kimonoType'] = "Spring/Summer";
@@ -30,8 +30,8 @@ export default class DataSheet_kimono extends DataSheetBase {
     this.items.push(item);
     item['kimonoPrice'] = "2000";
     item['kimonoDescription'] = "This is a standard type of kimono. It is designed to wear any occasions.";
-    item['document_key'] = "SXT9Ta4BuTpIJ8q30Z37";
-    item['kimonoImage'] = "https://firebasestorage.googleapis.com/v0/b/kirumono-app-1555251317938.appspot.com/o/kimono%2Fitem_2.JPG?alt=media&token=7971ec77-5038-4c35-befc-fcbdbcde9ad5";
+    item['document_key'] = "";
+    item['kimonoImage'] = "https://firebasestorage.googleapis.com/v0/b/";
     item['kimonoName'] = "Outer Top";
     item['kimonoCategory'] = "top_outer";
     item['kimonoType'] = "all_seasons";
