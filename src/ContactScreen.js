@@ -3,10 +3,11 @@ import './App.css';
 import btn_icon_957931 from './images/btn_icon_957931.png';
 import Footer from './Footer';
 import Header from './Header';
+import UTILITIES_ARRAY from './utilities';
+import firebase from '../node_modules/firebase';
 
 // UI framework component imports
 import Button from 'muicss/lib/react/button';
-
 
 export default class ContactScreen extends Component {
 
@@ -46,6 +47,7 @@ export default class ContactScreen extends Component {
   }
   
   onClick_elSubmit = (ev) => {
+
    let address = "your-email-address";
     let subject = "Inquiry: ";
     let lastName = this.state.last_name;

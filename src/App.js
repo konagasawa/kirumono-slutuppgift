@@ -10,6 +10,7 @@ import DataSheet_localizationSheet from './DataSheet_localizationSheet.js';
 import DataSheet_kimono from './DataSheet_kimono.js';
 import firebase from 'firebase';
 import firestore from 'firebase/firestore';
+import UTILITIES_FIREBASE_ARRAY from './utilities_firebase'
 
 
 export default class App extends Component {
